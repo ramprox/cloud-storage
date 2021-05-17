@@ -58,7 +58,34 @@ public class Client extends JFrame {
 	}
 
 	private void getFile(String filename) {
-		// TODO: 13.05.2021 downloading
+		try {
+			out.writeUTF("download");
+			out.writeUTF(filename);
+			boolean isFileExist = in.readBoolean();
+			if(!isFileExist) {
+				System.out.println("File" + filename + "not found");
+				return;
+			}
+			File file = new File("client/" + filename);
+			if(!file.exists()) {
+				file.createNewFile();
+			}
+			FileOutputStream fos = new FileOutputStream(file);
+			long size = in.readLong();
+			byte[] buffer = new byte[8 * 1024];
+			long pos = 0;
+			while(pos < size) {
+				int read = in.read(buffer);
+				fos.write(buffer, 0, read);
+				pos += read;
+			}
+			fos.close();
+			System.out.println("Downloading file " + filename + " done.");
+			out.writeUTF("OK");
+			in.readUTF();   // необходим, т.к. в методе run класса ClientHandler в конце цикла вызывается out.writeUTF(command);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	private void sendFile(String filename) {
