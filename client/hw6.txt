@@ -1,0 +1,3 @@
+﻿В проекте осталось реализовать upload, download, search и сортировку.
+Что касается upload и download собираюсь реализовать через ChunkedWriteHandler,
+т.к. при загрузке больших файлов выбрасывается OutOfMemoryError.
